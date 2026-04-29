@@ -1,0 +1,23 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Pretend to publish
+        env:
+          PUBLISH_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
+        run: |
+          # Intentional failure: the secret isn't set, so this exits non-zero.
+          # Gives us a known-failed run for rerun-workflow-run tests.
+          if [ -z "$PUBLISH_TOKEN" ]; then
+            echo "PUBLISH_TOKEN is required" >&2
+            exit 1
+          fi
+          echo "Publishing $GITHUB_REF_NAME"
